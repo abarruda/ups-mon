@@ -1,0 +1,7 @@
+[admin]
+        password = admin1
+        actions = SET
+        instcmds = ALL
+[upsmon_local]
+        password  = local1
+        upsmon master
