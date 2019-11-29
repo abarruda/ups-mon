@@ -1,5 +1,5 @@
 [admin]
-        password = admin1
+        password = admin
         actions = SET
         instcmds = ALL
 [upsmon_local]
