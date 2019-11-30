@@ -7,7 +7,7 @@ docker build -t ups-nut:test -f Dockerfile.debian
 ```
 
 ## Run
-For real time web based monitoring on port 8888 and email based alerting:
+For real time web based monitoring on port 8888 and email/text based alerting:
 
 - Required environment variables in environment file (referenced by *run.sh* as *test/env.file*): 
 
@@ -18,6 +18,10 @@ For real time web based monitoring on port 8888 and email based alerting:
 		SMTP_PORT
 		SMTP_USER
 		SMTP_PASS
+		TWILIO_ACCOUNT
+		TWILIO_AUTH_TOKEN
+		TWILIO_FROM_NUMBER
+		TWILIO_TO_NUMBER=
 
 - Start:
 
