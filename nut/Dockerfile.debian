@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
 	nut-server \
 	nut-cgi \
 	nginx \ 
-	fcgiwrap
+	fcgiwrap \
+	msmtp
 
 RUN echo "I_HAVE_SECURED_MY_CGI_DIRECTORY" >> /etc/nut/upsset.conf 
 
