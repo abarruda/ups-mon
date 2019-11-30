@@ -15,7 +15,7 @@ Load: $load%%\n\n\
 UPS: $UPSNAME\r\n\
 Alert type: $NOTIFYTYPE" | \
 msmtp -C /.msmtprc \
-	--logfile=/var/log/msmtp.log -dS $ALERT_EMAIL_TO
+	--logfile=/var/log/msmtp.log -dS $ALERT_EMAIL_TO >> /var/log/msmtp.log
 
 # Kubernetes should map a ConfigMap to .msmtprc file and consumed by `msmtp -C .msmtprc` instead of the above.
 
