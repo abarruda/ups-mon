@@ -28,6 +28,7 @@ chmod 755 /etc/nut/notifycmd.sh
 
 msmtp_config
 touch /var/log/msmtp.log
+touch /var/log/twilio.log
 
 upsdrvctl -D -u root start
 upsd -u root
@@ -39,4 +40,4 @@ service fcgiwrap restart
 #nginx -g 'daemon off;'
 service nginx restart
 
-tail -f /var/log/nginx/* /var/log/ups.log /var/log/msmtp.log
+tail -f /var/log/nginx/* /var/log/ups.log /var/log/msmtp.log /var/log/twilio.log
