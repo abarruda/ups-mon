@@ -1,18 +1,4 @@
 #!/bin/bash
-echo "# Accounts will inherit settings from this section
-defaults
-auth            on
-tls             on
-tls_certcheck   on
-tls_trust_file  /etc/ssl/certs/ca-certificates.crt
-
-account   default 
-host      $SMTP_HOST
-protocol  smtp
-port      $SMTP_PORT
-from      $SMTP_USER
-user      $SMTP_USER
-password  $SMTP_PASS" > /.msmtprc
 
 printf "To: $ALERT_EMAIL_TO\n\
 From: $ALERT_EMAIL_FROM_NAME\ <$ALERT_EMAIL_FROM>\n\
