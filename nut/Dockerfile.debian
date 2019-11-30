@@ -15,4 +15,6 @@ EXPOSE 80
 
 COPY entrypoint.sh /entrypoint.sh
 
+HEALTHCHECK CMD upsc CyberPower-1400VA@localhost
+
 ENTRYPOINT /entrypoint.sh
