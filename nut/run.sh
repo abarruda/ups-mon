@@ -8,8 +8,6 @@ docker run -it \
 	-v $(pwd)/config/upsmon.conf:/etc/nut/upsmon.conf \
 	-v $(pwd)/config/nut.conf:/etc/nut/nut.conf \
 	-v $(pwd)/config/hosts.conf:/tmp/hosts.conf \
-	-v $(pwd)/config/nginx.conf:/etc/nginx/sites-available/default \
-	-v $(pwd)/notifycmd.sh:/tmp/notifycmd.sh \
 	-v $(pwd)/test/CP1500PFCLCD.dev:/etc/nut/CP1500PFCLCD.dev \
 	-p 8888:80 \
 	--env-file ./test/env.file \

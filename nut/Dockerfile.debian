@@ -14,6 +14,8 @@ RUN echo "I_HAVE_SECURED_MY_CGI_DIRECTORY" >> /etc/nut/upsset.conf
 
 EXPOSE 80
 
+COPY config/nginx.conf /etc/nginx/sites-available/default
+COPY notifycmd.sh /etc/nut/notifycmd.sh
 COPY entrypoint.sh /entrypoint.sh
 
 HEALTHCHECK CMD upsc CyberPower-1400VA@localhost

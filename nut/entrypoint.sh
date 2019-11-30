@@ -23,7 +23,6 @@ chmod 644 /etc/nut/hosts.conf
 chmod 644 /etc/nut/*.html
 chown www-data:www-data /usr/lib/cgi-bin/nut/*.cgi
 
-cp /tmp/notifycmd.sh /etc/nut/notifycmd.sh
 chmod 755 /etc/nut/notifycmd.sh
 
 msmtp_config
