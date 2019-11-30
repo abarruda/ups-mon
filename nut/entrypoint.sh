@@ -34,7 +34,9 @@ upsd -u root
 upsmon -u root
 upslog -s CyberPower-1400VA@localhost -l /var/log/ups.log
 
+#fcgiwrap -s unix:/var/run/fcgiwrap.socket &
 service fcgiwrap restart
+#nginx -g 'daemon off;'
 service nginx restart
 
 tail -f /var/log/nginx/* /var/log/ups.log /var/log/msmtp.log
