@@ -1,2 +1,3 @@
 .msmtprc
 env.file
+run-helm.sh
