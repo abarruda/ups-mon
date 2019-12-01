@@ -3,7 +3,7 @@
 *Note: Web monitoring is only supported in Debian build*
 
 ```
-docker build -t ups-nut:test -f Dockerfile.debian
+docker build -t ups-mon:test -f Dockerfile.debian
 ```
 
 ## Run

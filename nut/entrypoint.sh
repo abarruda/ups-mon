@@ -18,8 +18,6 @@ user      $SMTP_USER
 password  $SMTP_PASS" > /.msmtprc
 }
 
-cp /tmp/hosts.conf /etc/nut/hosts.conf
-chmod 644 /etc/nut/hosts.conf
 chmod 644 /etc/nut/*.html
 chown www-data:www-data /usr/lib/cgi-bin/nut/*.cgi
 
