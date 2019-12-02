@@ -1,15 +1,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ups-mon-service
+  name: {{ .Chart.Name }}-service
+  annotations:
+    metallb.universe.tf/allow-shared-ip: {{ .Chart.Name }}
   labels:
+    app: {{ .Chart.Name }}
+
 spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
   selector:
-    app.kubernetes.io/name: {{ .Chart.Name }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app: {{ .Chart.Name }}
+  externalTrafficPolicy: Local
+  sessionAffinity: None
+  type: LoadBalancer
+  loadBalancerIP: {{ .Values.service.ip }}
+
+  ports:
+  - name: ui-http
+    port: {{ .Values.service.port }}
+    protocol: {{ .Values.service.protocol }}
+    targetPort: ui-http
+  

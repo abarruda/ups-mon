@@ -32,21 +32,42 @@ config:
     notifyCmd: /etc/nut/notifycmd.sh
     deadtime: 25
 
+secrets:
+  alert:
+    emailTo:
+    emailFrom:
+    emailFromName:
+
+    smtp:
+      host:
+      port:
+      user:
+      password:
+
+    twilio:
+      account:
+      authToken:
+      fromNumber:
+      toNumber:
+
+service:
+  port: 80
+  protocol: TCP
+  ip:
+
 
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: 1
+  repository: ups-mon
+  tag: test
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-service:
-  type: ClusterIP
-  port: 80
+
 
 ingress:
   enabled: false

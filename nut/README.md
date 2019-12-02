@@ -21,7 +21,7 @@ For real time web based monitoring on port 8888 and email/text based alerting:
 		TWILIO_ACCOUNT
 		TWILIO_AUTH_TOKEN
 		TWILIO_FROM_NUMBER
-		TWILIO_TO_NUMBER=
+		TWILIO_TO_NUMBER
 
 - Start:
 
