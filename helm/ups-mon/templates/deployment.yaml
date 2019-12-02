@@ -16,10 +16,7 @@ spec:
         app: {{ .Chart.Name }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-    {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+
       volumes:
         - name: config-volume
           configMap:
@@ -29,7 +26,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 
-          command: ["tail", "-f", "/etc/nut/hosts.conf"]
+          #command: ["tail", "-f", "/etc/nut/hosts.conf"]
 
           securityContext:
             privileged: true
@@ -143,15 +140,15 @@ spec:
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- with .Values.affinity }}
+
+    {{- if .Values.affinity.value }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: {{ .Values.affinity.label }}
+                  operator: In
+                  values: 
+                    - "{{ .Values.affinity.value }}"
     {{- end }}
