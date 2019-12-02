@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ups-mon-config-etc-nut
+data:
+  hosts.conf: |
+    MONITOR {{ .Values.config.ups.name }}@{{ .Values.config.ups.location }} "{{ .Values.config.ups.fullName }}"
+
+  nut.conf: |
+    MODE={{ (index .Values.config "nut.conf").mode }}
+
+  ups.conf: |
+    [{{ .Values.config.ups.name }}]
+      driver = {{ (index .Values.config "ups.conf").driver  }}
+      port = {{ (index .Values.config "ups.conf").port }}
+      pollinterval = {{ (index .Values.config "ups.conf").pollInterval }}
+
+  upsd.conf: |
+    LISTEN {{ (index .Values.config "upsd.conf").listen }}
+    MAXAGE {{ (index .Values.config "upsd.conf").maxAge }}
+
+  upsd.users: |
+    [{{ (index .Values.config "upsd.users").admin.name }}]
+        password = {{ (index .Values.config "upsd.users").admin.password }}
+        actions = SET
+        instcmds = ALL
+    [{{ (index .Values.config "upsd.users").user.name }}]
+        password  = {{ (index .Values.config "upsd.users").user.password }}
+        upsmon master
+
+  upsmon.conf: |
+    MONITOR {{ .Values.config.ups.name }}@{{ .Values.config.ups.location }} 1 {{ (index .Values.config "upsd.users").user.name }} {{ (index .Values.config "upsd.users").user.password }} master
+
+    NOTIFYCMD {{ (index .Values.config "upsmon.conf").notifyCmd }}
+    NOTIFYFLAG ONLINE     SYSLOG+WALL+EXEC
+    NOTIFYFLAG ONBATT     SYSLOG+WALL+EXEC
+    NOTIFYFLAG LOWBATT    SYSLOG+WALL+EXEC
+    NOTIFYFLAG FSD        SYSLOG+WALL+EXEC
+    NOTIFYFLAG COMMOK     SYSLOG+WALL+EXEC
+    NOTIFYFLAG COMMBAD    SYSLOG+WALL+EXEC
+    NOTIFYFLAG SHUTDOWN   SYSLOG+WALL+EXEC
+    NOTIFYFLAG REPLBATT   SYSLOG+WALL+EXEC
+    NOTIFYFLAG NOCOMM     SYSLOG+WALL+EXEC
+    NOTIFYFLAG NOPARENT   SYSLOG+WALL
+
+    DEADTIME {{ (index .Values.config "upsmon.conf").deadtime }}

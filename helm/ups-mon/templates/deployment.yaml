@@ -1,0 +1,149 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ups-mon-deployment
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: ups-mon-config-etc-nut
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          securityContext:
+            privileged: true
+
+          env:
+            - name: ALERT_EMAIL_TO
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: ALERT_EMAIL_TO
+
+            - name: ALERT_EMAIL_FROM
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: ALERT_EMAIL_FROM
+
+            - name: ALERT_EMAIL_FROM_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: ALERT_EMAIL_FROM_NAME
+
+            - name: SMTP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: SMTP_HOST
+
+            - name: SMTP_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: SMTP_PORT
+
+            - name: SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: SMTP_USER
+
+            - name: SMTP_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: SMTP_PASS
+
+            - name: TWILIO_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: TWILIO_ACCOUNT
+
+            - name: TWILIO_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: TWILIO_AUTH_TOKEN
+
+            - name: TWILIO_FROM_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: TWILIO_FROM_NUMBER
+
+            - name: TWILIO_TO_NUMBER
+              valueFrom:
+                secretKeyRef:
+                  name: ups-mon-secret
+                  key: TWILIO_TO_NUMBER
+
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nut/hosts.conf
+              subPath: hosts.conf
+
+            - name: config-volume
+              mountPath: /etc/nut/nut.conf
+              subPath: nut.conf
+
+            - name: config-volume
+              mountPath: /etc/nut/ups.conf
+              subPath: ups.conf
+
+            - name: config-volume
+              mountPath: /etc/nut/upsd.conf
+              subPath: upsd.conf
+
+            - name: config-volume
+              mountPath: /etc/nut/upsd.users
+              subPath: upsd.users
+
+            - name: config-volume
+              mountPath: /etc/nut/upsmon.conf
+              subPath: upsmon.conf
+
+
+
+          ports:
+            - name: ui-http
+              containerPort: 80
+              protocol: TCP
+
+          livenessProbe:
+            exec:
+              command:
+                - upsc
+                - {{ .Values.config.ups.name }}@{{ .Values.config.ups.location }}
+            initialDelaySeconds: {{ .Values.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.liveness.periodSeconds }}
+
+    {{- if .Values.affinity.value }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: {{ .Values.affinity.label }}
+                  operator: In
+                  values: 
+                    - "{{ .Values.affinity.value }}"
+    {{- end }}
