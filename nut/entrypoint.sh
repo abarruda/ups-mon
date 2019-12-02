@@ -18,6 +18,9 @@ user      $SMTP_USER
 password  $SMTP_PASS" > /.msmtprc
 }
 
+ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+dpkg-reconfigure -f noninteractive tzdata
+
 chmod 644 /etc/nut/*.html
 chown www-data:www-data /usr/lib/cgi-bin/nut/*.cgi
 

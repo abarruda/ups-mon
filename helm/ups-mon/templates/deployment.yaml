@@ -30,6 +30,9 @@ spec:
             privileged: true
 
           env:
+            - name: TZ
+              value: {{ .Values.config.timezone }}
+
             - name: ALERT_EMAIL_TO
               valueFrom:
                 secretKeyRef:

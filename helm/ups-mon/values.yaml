@@ -13,6 +13,7 @@ liveness:
   periodSeconds: 60
 
 config:
+  timezone: America/Los_Angeles
   ups:
     name: 
     fullName: 
