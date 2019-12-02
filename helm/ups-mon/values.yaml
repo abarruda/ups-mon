@@ -8,6 +8,10 @@ image:
   tag: test
   pullPolicy: IfNotPresent
 
+liveness:
+  initialDelaySeconds: 60
+  periodSeconds: 60
+
 config:
   ups:
     name: 
