@@ -1,0 +1,14 @@
+apiVersion: k3d.io/v1alpha2 # this will change in the future as we make everything more stable
+kind: Simple # internally, we also have a Cluster config, which is not yet available externally
+name: ups-mon-cluster # name that you want to give to your cluster (will still be prefixed with `k3d-`)
+image: rancher/k3s:v1.17.0-k3s.1
+# kubeAPI: # same as `--api-port 127.0.0.1:6445` (where the name would resolve to 127.0.0.1)
+#   hostIP: "127.0.0.1" # where the Kubernetes API will be listening on
+#   hostPort: "6445" # where the Kubernetes API listening port will be mapped to on your host system
+servers: 1
+agents: 0
+
+# options:
+#   k3d: # k3d runtime settings
+#     wait: true # wait for cluster to be usable before returining; same as `--wait` (default: true)
+#     timeout: "60s" # wait timeout before aborting; same as `--timeout 60s`

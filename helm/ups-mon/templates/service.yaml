@@ -20,3 +20,8 @@ spec:
     port: {{ .Values.service.port }}
     protocol: {{ .Values.service.protocol }}
     targetPort: ui-http
+
+  - name: api-http
+    port: {{ .Values.service.api.port }}
+    protocol: {{ .Values.service.api.protocol }}
+    targetPort: rest-api
