@@ -44,3 +44,9 @@ data:
     NOTIFYFLAG NOPARENT   SYSLOG+WALL
 
     DEADTIME {{ (index .Values.config "upsmon.conf").deadtime }}
+
+{{- if .Values.test.enabled }}
+  mock-ups.dev: |-
+  {{- $mockUpsDev := printf .Values.test.mockUpsDevicePath }}
+  {{ (.Files.Get $mockUpsDev) | nindent 4 }}
+{{- end }}

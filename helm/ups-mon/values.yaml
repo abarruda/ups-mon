@@ -4,13 +4,25 @@
 replicaCount: 1
 
 image:
-  repository: ups-mon
+  repository: abarruda/nut-server
   tag: test
   pullPolicy: IfNotPresent
+  api:
+    name: abarruda/nut-rest-api
+    tag: test
 
 liveness:
   initialDelaySeconds: 60
   periodSeconds: 60
+
+readiness:
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 6
+  api:
+    initialDelaySeconds: 20
+    periodSeconds: 10
+    failureThreshold: 6
 
 config:
   timezone: America/Los_Angeles
@@ -43,29 +55,50 @@ config:
     notifyCmd: /etc/nut/notifycmd.sh
     deadtime: 25
 
+  api:
+    xms: "32m"
+    xmx: "48m"
+
 secrets:
   alert:
-    emailTo:
-    emailFrom:
-    emailFromName:
+    emailTo: ""
+    emailFrom: ""
+    emailFromName: ""
 
     smtp:
-      host:
-      port:
-      user:
-      password:
+      host: ""
+      port: ""
+      user: ""
+      password: ""
 
     twilio:
-      account:
-      authToken:
-      fromNumber:
-      toNumber:
+      account: ""
+      authToken: ""
+      fromNumber: ""
+      toNumber: ""
 
 service:
   port: 80
   protocol: TCP
   ip:
+  api:
+    port: 8080
+    protocol: TCP
 
-affinity:
-  label: 
-  value:
+resources:
+  server:
+    memory:
+      limit: "16Mi"
+  api:
+    memory:
+      limit: "64Mi"
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+test:
+  enabled: false
+  mockUpsDevicePath: test/CP1500PFCLCD.dev

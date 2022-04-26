@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ups-mon-deployment
+  name: ups-mon
   labels:
     app: {{ .Chart.Name }}
 spec:
@@ -22,9 +22,12 @@ spec:
           configMap:
             name: ups-mon-config-etc-nut
       containers:
-        - name: {{ .Chart.Name }}
+        - name: nut-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            limits:
+              memory: "{{ .Values.resources.server.memory.limit }}"
 
           securityContext:
             privileged: true
@@ -124,29 +127,58 @@ spec:
               mountPath: /etc/nut/upsmon.conf
               subPath: upsmon.conf
 
-
+            {{- if .Values.test.enabled }}
+            - name: config-volume
+              mountPath: /etc/nut/mock-ups.dev
+              subPath: mock-ups.dev
+            {{- end }}
 
           ports:
             - name: ui-http
-              containerPort: 80
               protocol: TCP
-
+              containerPort: 80
+              
           livenessProbe:
             exec:
               command:
                 - upsc
-                - {{ .Values.config.ups.name }}@{{ .Values.config.ups.location }}
+                - "{{ .Values.config.ups.name }}@{{ .Values.config.ups.location }}"
             initialDelaySeconds: {{ .Values.liveness.initialDelaySeconds }}
             periodSeconds: {{ .Values.liveness.periodSeconds }}
 
-    {{- if .Values.affinity.value }}
+        - name: nut-rest-api
+          image: "{{ .Values.image.api.name}}:{{ .Values.image.api.tag}}"
+          resources:
+            limits:
+              memory: "{{ .Values.resources.api.memory.limit }}"
+          env:
+            - name: TZ
+              value: {{ .Values.config.timezone }}
+            - name: CATALINA_OPTS
+              value: "-Xms{{ .Values.config.api.xms }} -Xmx{{ .Values.config.api.xmx }}"
+          volumeMounts:
+          ports:
+            - name: rest-api
+              protocol: TCP
+              containerPort: 8080
+
+          readinessProbe:
+            httpGet:
+              path: /jnut/nut/servers
+              port: 8080
+            initialDelaySeconds: {{ .Values.readiness.api.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readiness.api.periodSeconds }}
+            failureThreshold: {{ .Values.readiness.api.failureThreshold }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                - key: {{ .Values.affinity.label }}
-                  operator: In
-                  values: 
-                    - "{{ .Values.affinity.value }}"
-    {{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{ end }}

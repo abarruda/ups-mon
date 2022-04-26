@@ -1,3 +1,5 @@
 .msmtprc
 env.file
 run-helm.sh
+.DS_Store
+run/run-raspberrypi.sh
